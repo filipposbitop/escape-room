@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Συναρμολόγηση Μηχανής Turing</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Orbitron', monospace;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a3a 50%, #2d1b69 100%);
+            min-height: 100vh;
+            color: #00ff88;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+        
+        .title {
+            font-size: 2.5rem;
+            font-weight: 900;
+            text-shadow: 0 0 20px #00ff88, 0 0 40px #00ff88;
+            margin-bottom: 10px;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: #88ffaa;
+            margin-bottom: 20px;
+        }
+        
+        .progress-container {
+            width: 100%;
+            height: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            margin: 20px 0;
+            overflow: hidden;
+            border: 2px solid #00ff88;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #00ff88, #88ffaa);
+            width: 0%;
+            transition: width 0.5s ease;
+            border-radius: 8px;
+            box-shadow: 0 0 20px #00ff88;
+        }
+        
+        .game-area {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 40px;
+            margin: 40px 0;
+        }
+        
+        .components-panel {
+            background: rgba(0, 0, 0, 0.4);
+            border: 2px solid #00ff88;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 0 30px rgba(0, 255, 136, 0.3);
+        }
+        
+        .panel-title {
+            text-align: center;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #88ffaa;
+        }
+        
+        .components-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        
+        .component {
+            background: linear-gradient(145deg, #1a1a3a, #2d1b69);
+            border: 2px solid #00ff88;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            cursor: grab;
+            transition: all 0.3s ease;
+            position: relative;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .component:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.5);
+        }
+        
+        .component.dragging {
+            cursor: grabbing;
+            transform: rotate(5deg) scale(1.1);
+            z-index: 1000;
+            opacity: 0.8;
+        }
+        
+        .component-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        
+        .component-name {
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+        
+        .machine-area {
+            background: rgba(0, 0, 0, 0.4);
+            border: 2px solid #00ff88;
+            border-radius: 15px;
+            padding: 20px;
+            position: relative;
+            min-height: 600px;
+            box-shadow: 0 0 30px rgba(0, 255, 136, 0.3);
+        }
+        
+        .machine-title {
+            text-align: center;
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            color: #88ffaa;
+        }
+        
+        .drop-zone {
+            position: absolute;
+            border: 3px dashed #555;
+            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            color: #888;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .drop-zone.drag-over {
+            border-color: #00ff88;
+            background: rgba(0, 255, 136, 0.1);
+            color: #00ff88;
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+        }
+        
+        .drop-zone.filled {
+            border-color: #00ff88;
+            background: rgba(0, 255, 136, 0.2);
+            color: #00ff88;
+        }
+        
+        /* Θέσεις για τα εξαρτήματα */
+        .tape-zone { top: 50px; left: 50px; width: 500px; height: 80px; }
+        .head-zone { top: 150px; left: 200px; width: 200px; height: 100px; }
+        .control-zone { top: 280px; left: 100px; width: 300px; height: 120px; }
+        .state-zone { top: 420px; left: 150px; width: 200px; height: 100px; }
+        .memory-zone { top: 180px; left: 450px; width: 150px; height: 150px; }
+        
+        .machine-tape {
+            position: absolute;
+            top: 50px;
+            left: 50px;
+            width: 500px;
+            height: 80px;
+            background: linear-gradient(90deg, #333, #555);
+            border: 2px solid #00ff88;
+            border-radius: 5px;
+            display: none;
+        }
+        
+        .tape-cells {
+            display: flex;
+            height: 100%;
+        }
+        
+        .tape-cell {
+            flex: 1;
+            border-right: 1px solid #777;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: #00ff88;
+        }
+        
+        .read-head {
+            position: absolute;
+            top: 130px;
+            left: 290px;
+            width: 20px;
+            height: 40px;
+            background: #ff4444;
+            border-radius: 10px;
+            display: none;
+            animation: blink 1s infinite;
+        }
+        
+        .success-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.9);
+            border: 3px solid #00ff88;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            z-index: 2000;
+            display: none;
+            box-shadow: 0 0 50px rgba(0, 255, 136, 0.8);
+        }
+        
+        .success-title {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: #00ff88;
+        }
+        
+        .success-text {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            color: #88ffaa;
+        }
+        
+        .demo-button {
+            background: linear-gradient(145deg, #00ff88, #88ffaa);
+            color: #000;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Orbitron', monospace;
+        }
+        
+        .demo-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(0, 255, 136, 0.5);
+        }
+        
+        .instructions {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid #555;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .instruction-text {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #aaa;
+        }
+        
+        @keyframes glow {
+            from { text-shadow: 0 0 20px #00ff88; }
+            to { text-shadow: 0 0 30px #00ff88, 0 0 40px #88ffaa; }
+        }
+        
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0.3; }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        .component.correct {
+            animation: pulse 0.5s ease-in-out;
+            border-color: #00ff88;
+            box-shadow: 0 0 30px rgba(0, 255, 136, 0.8);
+        }
+        
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1500;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #00ff88;
+            border-radius: 50%;
+            animation: float 3s ease-out forwards;
+        }
+        
+        @keyframes float {
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-200px) scale(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+    
+    <div class="container">
+        <div class="header">
+            <h1 class="title">🔧 Συναρμολόγηση Μηχανής Turing</h1>
+            <p class="subtitle">Σύρε τα εξαρτήματα στις σωστές θέσεις για να ολοκληρώσεις τη μηχανή!</p>
+            
+            <div class="instructions">
+                <p class="instruction-text">
+                    🎯 <strong>Στόχος:</strong> Τοποθέτησε όλα τα εξαρτήματα στις σωστές θέσεις της Μηχανής Turing<br>
+                    🖱️ <strong>Οδηγίες:</strong> Κάνε drag & drop τα εξαρτήματα από αριστερά στις κατάλληλες ζώνες δεξιά<br>
+                    ⚡ Κάθε εξάρτημα έχει τη δική του θέση - βρες τη σωστή για να προχωρήσεις!
+                </p>
+            </div>
+            
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+        </div>
+        
+        <div class="game-area">
+            <div class="components-panel">
+                <h3 class="panel-title">🧩 Εξαρτήματα</h3>
+                <div class="components-grid">
+                    <div class="component" draggable="true" data-type="tape">
+                        <div class="component-icon">📏</div>
+                        <div class="component-name">Ταινία</div>
+                    </div>
+                    <div class="component" draggable="true" data-type="head">
+                        <div class="component-icon">🔍</div>
+                        <div class="component-name">Κεφαλή Ανάγνωσης</div>
+                    </div>
+                    <div class="component" draggable="true" data-type="control">
+                        <div class="component-icon">⚙️</div>
+                        <div class="component-name">Μονάδα Ελέγχου</div>
+                    </div>
+                    <div class="component" draggable="true" data-type="state">
+                        <div class="component-icon">🔄</div>
+                        <div class="component-name">Πίνακας Καταστάσεων</div>
+                    </div>
+                    <div class="component" draggable="true" data-type="memory">
+                        <div class="component-icon">💾</div>
+                        <div class="component-name">Μνήμη</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="machine-area">
+                <h3 class="machine-title">🤖 Μηχανή Turing</h3>
+                
+                <div class="drop-zone tape-zone" data-accepts="tape">
+                    Ταινία Δεδομένων<br><small>Εδώ αποθηκεύονται τα δεδομένα</small>
+                </div>
+                
+                <div class="drop-zone head-zone" data-accepts="head">
+                    Κεφαλή Ανάγνωσης<br><small>Διαβάζει/Γράφει στην ταινία</small>
+                </div>
+                
+                <div class="drop-zone control-zone" data-accepts="control">
+                    Μονάδα Ελέγχου<br><small>Εκτελεί τις εντολές</small>
+                </div>
+                
+                <div class="drop-zone state-zone" data-accepts="state">
+                    Πίνακας Καταστάσεων<br><small>Καθορίζει την επόμενη ενέργεια</small>
+                </div>
+                
+                <div class="drop-zone memory-zone" data-accepts="memory">
+                    Μνήμη<br><small>Αποθηκεύει καταστάσεις</small>
+                </div>
+                
+                <!-- Στοιχεία μηχανής που εμφανίζονται μετά -->
+                <div class="machine-tape" id="machineTape">
+                    <div class="tape-cells">
+                        <div class="tape-cell">1</div>
+                        <div class="tape-cell">0</div>
+                        <div class="tape-cell">1</div>
+                        <div class="tape-cell">1</div>
+                        <div class="tape-cell">0</div>
+                        <div class="tape-cell">□</div>
+                        <div class="tape-cell">□</div>
+                        <div class="tape-cell">□</div>
+                    </div>
+                </div>
+                <div class="read-head" id="readHead"></div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="success-message" id="successMessage">
+        <h2 class="success-title">🎉 Συγχαρητήρια!</h2>
+        <p class="success-text">
+            Συναρμολόγησες επιτυχώς τη Μηχανή Turing!<br>
+            Η θεωρητική μηχανή του Alan Turing είναι πλέον έτοιμη για λειτουργία.
+        </p>
+        <button class="demo-button" onclick="startDemo()">🚀 Δες τη Μηχανή σε Δράση!</button>
+    </div>
+    
+    <script>
+        let completedComponents = 0;
+        const totalComponents = 5;
+        let draggedElement = null;
+        
+        // Drag & Drop functionality
+        document.querySelectorAll('.component').forEach(component => {
+            component.addEventListener('dragstart', handleDragStart);
+            component.addEventListener('dragend', handleDragEnd);
+        });
+        
+        document.querySelectorAll('.drop-zone').forEach(zone => {
+            zone.addEventListener('dragover', handleDragOver);
+            zone.addEventListener('drop', handleDrop);
+            zone.addEventListener('dragenter', handleDragEnter);
+            zone.addEventListener('dragleave', handleDragLeave);
+        });
+        
+        function handleDragStart(e) {
+            draggedElement = this;
+            this.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+        }
+        
+        function handleDragEnd(e) {
+            this.classList.remove('dragging');
+        }
+        
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+        }
+        
+        function handleDragEnter(e) {
+            this.classList.add('drag-over');
+        }
+        
+        function handleDragLeave(e) {
+            this.classList.remove('drag-over');
+        }
+        
+        function handleDrop(e) {
+            e.preventDefault();
+            this.classList.remove('drag-over');
+            
+            const acceptedType = this.dataset.accepts;
+            const draggedType = draggedElement.dataset.type;
+            
+            if (acceptedType === draggedType && !this.classList.contains('filled')) {
+                // Σωστή τοποθέτηση
+                this.classList.add('filled');
+                this.innerHTML = draggedElement.innerHTML;
+                draggedElement.style.display = 'none';
+                
+                // Εφέ επιτυχίας
+                createParticles(e.clientX, e.clientY);
+                this.classList.add('correct');
+                
+                completedComponents++;
+                updateProgress();
+                
+                if (completedComponents === totalComponents) {
+                    setTimeout(showSuccess, 500);
+                }
+            } else {
+                // Λάθος τοποθέτηση - shake effect
+                this.style.animation = 'shake 0.5s ease-in-out';
+                setTimeout(() => {
+                    this.style.animation = '';
+                }, 500);
+            }
+        }
+        
+        function updateProgress() {
+            const progressBar = document.getElementById('progressBar');
+            const percentage = (completedComponents / totalComponents) * 100;
+            progressBar.style.width = percentage + '%';
+        }
+        
+        function createParticles(x, y) {
+            const particles = document.getElementById('particles');
+            
+            for (let i = 0; i < 15; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = (x + Math.random() * 100 - 50) + 'px';
+                particle.style.top = (y + Math.random() * 100 - 50) + 'px';
+                particle.style.animationDelay = Math.random() * 0.5 + 's';
+                particles.appendChild(particle);
+                
+                setTimeout(() => {
+                    particle.remove();
+                }, 3000);
+            }
+        }
+        
+        function showSuccess() {
+            document.getElementById('successMessage').style.display = 'block';
+        }
+        
+        function startDemo() {
+            document.getElementById('successMessage').style.display = 'none';
+            document.getElementById('machineTape').style.display = 'block';
+            document.getElementById('readHead').style.display = 'block';
+            
+            // Απλή animation της κεφαλής ανάγνωσης
+            let position = 0;
+            const moveHead = () => {
+                if (position < 7) {
+                    document.getElementById('readHead').style.left = (290 + position * 62) + 'px';
+                    position++;
+                    setTimeout(moveHead, 800);
+                } else {
+                    alert('🎯 Η Μηχανή Turing ολοκλήρωσε την επεξεργασία!\n\nΟ Alan Turing μπορεί τώρα να επιστρέψει στο παρόν!');
+                }
+            };
+            
+            setTimeout(moveHead, 1000);
+        }
+        
+        // Shake animation για λάθος τοποθετήσεις
+        const shakeKeyframes = `
+            @keyframes shake {
+                0%, 100% { transform: translateX(0); }
+                25% { transform: translateX(-10px); }
+                75% { transform: translateX(10px); }
+            }
+        `;
+        
+        const styleSheet = document.createElement('style');
+        styleSheet.textContent = shakeKeyframes;
+        document.head.appendChild(styleSheet);
+    </script>
+</body>
+</html>
