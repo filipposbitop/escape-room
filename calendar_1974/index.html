@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ημερολόγιο 1974</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #2c1810, #4a2c17);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #f4e4c1;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 95%;
+            text-align: center;
+        }
+
+        .intro-screen {
+            background: radial-gradient(circle, #8b4513, #654321);
+            border: 3px solid #d4af37;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+            to { box-shadow: 0 10px 40px rgba(212,175,55,0.3); }
+        }
+
+        .intro-title {
+            font-size: 2.5em;
+            color: #d4af37;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+
+        .open-btn {
+            background: linear-gradient(45deg, #d4af37, #b8860b);
+            color: #2c1810;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.3em;
+            font-weight: bold;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .open-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(212,175,55,0.4);
+        }
+
+        .calendar-container {
+            display: none;
+            background: #f4e4c1;
+            color: #2c1810;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .calendar-header {
+            background: #8b4513;
+            color: #f4e4c1;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .year-title {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .months-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .month-btn {
+            background: #e6d3b7;
+            border: 2px solid #8b4513;
+            padding: 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+            color: #2c1810;
+        }
+
+        .month-btn:hover {
+            background: #d4af37;
+            transform: scale(1.05);
+        }
+
+        .month-view {
+            display: none;
+            background: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            border: 2px solid #8b4513;
+        }
+
+        .month-header {
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            color: #8b4513;
+            font-weight: bold;
+        }
+
+        .days-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+        }
+
+        .day-header {
+            background: #8b4513;
+            color: #f4e4c1;
+            padding: 10px 5px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .day {
+            padding: 15px 5px;
+            text-align: center;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            transition: all 0.3s;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .day:hover {
+            background: #f0f0f0;
+        }
+
+        .special-day {
+            background: #ff4444;
+            color: white;
+            font-weight: bold;
+            animation: pulse 1.5s infinite;
+        }
+
+        .special-day:hover {
+            background: #cc0000;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .message-popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #2c1810, #4a2c17);
+            color: #f4e4c1;
+            padding: 30px;
+            border-radius: 15px;
+            border: 3px solid #d4af37;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+            max-width: 500px;
+            width: 90%;
+            z-index: 1000;
+        }
+
+        .message-title {
+            font-size: 1.5em;
+            color: #d4af37;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .message-text {
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .close-btn {
+            background: #d4af37;
+            color: #2c1810;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .back-btn {
+            background: #8b4513;
+            color: #f4e4c1;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 999;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="intro-screen" id="introScreen">
+            <div class="intro-title">🗓️ Βρήκες το ημερολόγιο του 1974! 🗓️</div>
+            <button class="open-btn" onclick="openCalendar()">Άνοιξε το</button>
+        </div>
+
+        <div class="calendar-container" id="calendarContainer">
+            <div class="calendar-header">
+                <div class="year-title">ΗΜΕΡΟΛΟΓΙΟ 1974</div>
+                <div>Επιλέξτε έναν μήνα για να τον εξερευνήσετε</div>
+            </div>
+
+            <div class="months-grid">
+                <div class="month-btn" onclick="showMonth(0)">ΙΑΝΟΥΑΡΙΟΣ</div>
+                <div class="month-btn" onclick="showMonth(1)">ΦΕΒΡΟΥΑΡΙΟΣ</div>
+                <div class="month-btn" onclick="showMonth(2)">ΜΑΡΤΙΟΣ</div>
+                <div class="month-btn" onclick="showMonth(3)">ΑΠΡΙΛΙΟΣ</div>
+                <div class="month-btn" onclick="showMonth(4)">ΜΑΙΟΣ</div>
+                <div class="month-btn" onclick="showMonth(5)">ΙΟΥΝΙΟΣ</div>
+                <div class="month-btn" onclick="showMonth(6)">ΙΟΥΛΙΟΣ</div>
+                <div class="month-btn" onclick="showMonth(7)">ΑΥΓΟΥΣΤΟΣ</div>
+                <div class="month-btn" onclick="showMonth(8)">ΣΕΠΤΕΜΒΡΙΟΣ</div>
+                <div class="month-btn" onclick="showMonth(9)">ΟΚΤΩΒΡΙΟΣ</div>
+                <div class="month-btn" onclick="showMonth(10)">ΝΟΕΜΒΡΙΟΣ</div>
+                <div class="month-btn" onclick="showMonth(11)">ΔΕΚΕΜΒΡΙΟΣ</div>
+            </div>
+
+            <div class="month-view" id="monthView">
+                <div class="month-header" id="monthHeader"></div>
+                <div class="days-grid" id="daysGrid"></div>
+                <button class="back-btn" onclick="hideMonth()">Επιστροφή στους μήνες</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="overlay" id="overlay"></div>
+    <div class="message-popup" id="messagePopup">
+        <div class="message-title">🖥️ Ιστορική Ημερομηνία! 🖥️</div>
+        <div class="message-text">
+            Ο Altair σήμερα γεννήθηκε.<br><br>
+            <strong>Βρες τη σειρά που άλλαξε τα πάντα:</strong><br>
+            Altair 8800, Apple I, Commodore PET, IBM PC
+        </div>
+        <button class="close-btn" onclick="closeMessage()">Κλείσιμο</button>
+    </div>
+
+    <script>
+        const monthNames = [
+            'ΙΑΝΟΥΑΡΙΟΣ', 'ΦΕΒΡΟΥΑΡΙΟΣ', 'ΜΑΡΤΙΟΣ', 'ΑΠΡΙΛΙΟΣ', 'ΜΑΙΟΣ', 'ΙΟΥΝΙΟΣ',
+            'ΙΟΥΛΙΟΣ', 'ΑΥΓΟΥΣΤΟΣ', 'ΣΕΠΤΕΜΒΡΙΟΣ', 'ΟΚΤΩΒΡΙΟΣ', 'ΝΟΕΜΒΡΙΟΣ', 'ΔΕΚΕΜΒΡΙΟΣ'
+        ];
+
+        const dayNames = ['ΚΥΡ', 'ΔΕΥ', 'ΤΡΙ', 'ΤΕΤ', 'ΠΕΜ', 'ΠΑΡ', 'ΣΑΒ'];
+
+        const daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+
+        function openCalendar() {
+            document.getElementById('introScreen').style.display = 'none';
+            document.getElementById('calendarContainer').style.display = 'block';
+        }
+
+        function showMonth(monthIndex) {
+            const monthView = document.getElementById('monthView');
+            const monthHeader = document.getElementById('monthHeader');
+            const daysGrid = document.getElementById('daysGrid');
+
+            monthHeader.textContent = monthNames[monthIndex] + ' 1974';
+            
+            // Clear previous content
+            daysGrid.innerHTML = '';
+
+            // Add day headers
+            dayNames.forEach(day => {
+                const dayHeader = document.createElement('div');
+                dayHeader.className = 'day-header';
+                dayHeader.textContent = day;
+                daysGrid.appendChild(dayHeader);
+            });
+
+            // Calculate first day of month (1974-01-01 was Tuesday = 2)
+            const firstDayOfYear = 2; // Tuesday
+            let dayOfYear = 0;
+            for (let i = 0; i < monthIndex; i++) {
+                dayOfYear += daysInMonth[i];
+            }
+            const firstDayOfMonth = (firstDayOfYear + dayOfYear) % 7;
+
+            // Add empty cells for days before month starts
+            for (let i = 0; i < firstDayOfMonth; i++) {
+                const emptyDay = document.createElement('div');
+                emptyDay.className = 'day';
+                daysGrid.appendChild(emptyDay);
+            }
+
+            // Add days of the month
+            const daysCount = daysInMonth[monthIndex];
+            for (let day = 1; day <= daysCount; day++) {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'day';
+                dayElement.textContent = day;
+                
+                // Check if this is December 19, 1974
+                if (monthIndex === 11 && day === 19) {
+                    dayElement.className += ' special-day';
+                    dayElement.onclick = () => showMessage();
+                }
+                
+                daysGrid.appendChild(dayElement);
+            }
+
+            monthView.style.display = 'block';
+        }
+
+        function hideMonth() {
+            document.getElementById('monthView').style.display = 'none';
+        }
+
+        function showMessage() {
+            document.getElementById('overlay').style.display = 'block';
+            document.getElementById('messagePopup').style.display = 'block';
+        }
+
+        function closeMessage() {
+            document.getElementById('overlay').style.display = 'none';
+            document.getElementById('messagePopup').style.display = 'none';
+        }
+
+        // Close message when clicking overlay
+        document.getElementById('overlay').onclick = closeMessage;
+    </script>
+</body>
+</html>
