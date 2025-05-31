@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Σημείωμα του Alan</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            height: 100vh;
+            background: radial-gradient(ellipse at center, #1a1a2e 0%, #16213e 35%, #0f0f23 100%);
+            overflow: hidden;
+            font-family: 'Dancing Script', cursive;
+            position: relative;
+        }
+
+        /* Animated stars */
+        .stars {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 2s infinite alternate;
+        }
+
+        .star:nth-child(1) { width: 2px; height: 2px; top: 20%; left: 10%; animation-delay: 0s; }
+        .star:nth-child(2) { width: 1px; height: 1px; top: 30%; left: 80%; animation-delay: 0.5s; }
+        .star:nth-child(3) { width: 3px; height: 3px; top: 70%; left: 20%; animation-delay: 1s; }
+        .star:nth-child(4) { width: 2px; height: 2px; top: 15%; right: 25%; animation-delay: 1.5s; }
+        .star:nth-child(5) { width: 1px; height: 1px; top: 60%; right: 15%; animation-delay: 0.3s; }
+        .star:nth-child(6) { width: 2px; height: 2px; top: 80%; left: 70%; animation-delay: 0.8s; }
+        .star:nth-child(7) { width: 1px; height: 1px; top: 25%; left: 50%; animation-delay: 1.2s; }
+        .star:nth-child(8) { width: 3px; height: 3px; top: 45%; right: 30%; animation-delay: 0.2s; }
+
+        @keyframes twinkle {
+            0% { opacity: 0.3; transform: scale(1); }
+            100% { opacity: 1; transform: scale(1.2); }
+        }
+
+        /* Floating particles */
+        .particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 8s infinite linear;
+        }
+
+        .particle:nth-child(odd) { animation-direction: reverse; }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* Note container */
+        .note-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation: materializeNote 3s ease-out;
+        }
+
+        @keyframes materializeNote {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.3) rotate(10deg);
+                filter: blur(5px);
+            }
+            50% {
+                opacity: 0.7;
+                transform: translate(-50%, -50%) scale(1.1) rotate(-2deg);
+                filter: blur(2px);
+            }
+            100% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1) rotate(0deg);
+                filter: blur(0px);
+            }
+        }
+
+        /* The note */
+        .note {
+            background: linear-gradient(145deg, #f4f1e8 0%, #ede8d8 100%);
+            width: 400px;
+            height: 300px;
+            padding: 40px 30px;
+            border-radius: 3px;
+            box-shadow: 
+                0 15px 35px rgba(0, 0, 0, 0.4),
+                0 5px 15px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.6);
+            position: relative;
+            animation: noteFloat 6s ease-in-out infinite;
+            transform-origin: center;
+        }
+
+        @keyframes noteFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            25% { transform: translateY(-8px) rotate(0.5deg); }
+            50% { transform: translateY(0px) rotate(0deg); }
+            75% { transform: translateY(-5px) rotate(-0.3deg); }
+        }
+
+        /* Paper texture */
+        .note::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 24px,
+                    rgba(200, 200, 200, 0.1) 25px
+                ),
+                radial-gradient(circle at 20% 30%, rgba(180, 160, 120, 0.1) 1px, transparent 1px);
+            pointer-events: none;
+        }
+
+        /* Torn edge effect */
+        .note::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(145deg, #e8e5dc 0%, #ddd8c8 100%);
+            z-index: -1;
+            border-radius: 4px;
+        }
+
+        /* The handwritten text */
+        .handwritten-text {
+            font-size: 28px;
+            color: #2c3e50;
+            text-align: center;
+            line-height: 1.6;
+            font-weight: 600;
+            margin-top: 60px;
+            animation: writeText 4s ease-out 1s both;
+            position: relative;
+        }
+
+        @keyframes writeText {
+            0% {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Binary number emphasis */
+        .binary-number {
+            font-size: 32px;
+            color: #e74c3c;
+            text-shadow: 0 0 10px rgba(231, 76, 60, 0.3);
+            animation: glow 2s ease-in-out infinite alternate;
+            display: inline-block;
+            margin: 10px 0;
+        }
+
+        @keyframes glow {
+            0% { text-shadow: 0 0 10px rgba(231, 76, 60, 0.3); }
+            100% { text-shadow: 0 0 20px rgba(231, 76, 60, 0.6), 0 0 30px rgba(231, 76, 60, 0.3); }
+        }
+
+        /* Signature */
+        .signature {
+            position: absolute;
+            bottom: 30px;
+            right: 40px;
+            font-size: 20px;
+            color: #34495e;
+            font-style: italic;
+            opacity: 0;
+            animation: fadeInSignature 2s ease-out 3s both;
+        }
+
+        @keyframes fadeInSignature {
+            0% { opacity: 0; transform: translateX(20px); }
+            100% { opacity: 0.8; transform: translateX(0); }
+        }
+
+        /* Mystical aura */
+        .aura {
+            position: absolute;
+            top: -20px;
+            left: -20px;
+            right: -20px;
+            bottom: -20px;
+            border-radius: 10px;
+            background: linear-gradient(45deg, 
+                rgba(147, 112, 219, 0.1), 
+                rgba(72, 61, 139, 0.1), 
+                rgba(147, 112, 219, 0.1));
+            animation: pulseMystic 4s ease-in-out infinite;
+            z-index: -2;
+        }
+
+        @keyframes pulseMystic {
+            0%, 100% { 
+                opacity: 0.3; 
+                transform: scale(1); 
+            }
+            50% { 
+                opacity: 0.6; 
+                transform: scale(1.05); 
+            }
+        }
+
+        /* Floating particles around note */
+        .note-particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(147, 112, 219, 0.6);
+            border-radius: 50%;
+            animation: orbitNote 10s linear infinite;
+        }
+
+        .note-particle:nth-child(1) { animation-delay: 0s; }
+        .note-particle:nth-child(2) { animation-delay: -2.5s; }
+        .note-particle:nth-child(3) { animation-delay: -5s; }
+        .note-particle:nth-child(4) { animation-delay: -7.5s; }
+
+        @keyframes orbitNote {
+            0% { 
+                transform: rotate(0deg) translateX(250px) rotate(0deg); 
+                opacity: 0; 
+            }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { 
+                transform: rotate(360deg) translateX(250px) rotate(-360deg); 
+                opacity: 0; 
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Stars background -->
+    <div class="stars">
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+    </div>
+
+    <!-- Floating particles -->
+    <div class="particle" style="width: 6px; height: 6px; left: 20%; animation-delay: 0s;"></div>
+    <div class="particle" style="width: 4px; height: 4px; left: 80%; animation-delay: 2s;"></div>
+    <div class="particle" style="width: 5px; height: 5px; left: 60%; animation-delay: 4s;"></div>
+    <div class="particle" style="width: 3px; height: 3px; left: 40%; animation-delay: 6s;"></div>
+
+    <!-- The mystical note -->
+    <div class="note-container">
+        <div class="aura"></div>
+        <div class="note">
+            <div class="handwritten-text">
+                Η αλήθεια κρύβεται<br>
+                στον αριθμό<br>
+                <div class="binary-number">1001010...</div>
+            </div>
+            <div class="signature">- A.T.</div>
+        </div>
+        
+        <!-- Orbiting particles -->
+        <div class="note-particle"></div>
+        <div class="note-particle"></div>
+        <div class="note-particle"></div>
+        <div class="note-particle"></div>
+    </div>
+
+    <script>
+        // Add random floating particles periodically
+        setInterval(() => {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.width = Math.random() * 4 + 2 + 'px';
+            particle.style.height = particle.style.width;
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDelay = '0s';
+            particle.style.animationDuration = (Math.random() * 5 + 8) + 's';
+            document.querySelector('.stars').appendChild(particle);
+            
+            // Remove after animation
+            setTimeout(() => {
+                particle.remove();
+            }, 13000);
+        }, 2000);
+    </script>
+</body>
+</html>
