@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ημερολόγιο 1974</title>
+    <title>Ημερολόγιο Δεκαετίας του '70</title>
     <style>
         * {
             margin: 0;
@@ -22,7 +22,7 @@
         }
 
         .container {
-            max-width: 900px;
+            max-width: 1000px;
             width: 95%;
             text-align: center;
         }
@@ -84,19 +84,19 @@
             margin-bottom: 20px;
         }
 
-        .year-title {
+        .decade-title {
             font-size: 2em;
             margin-bottom: 10px;
         }
 
-        .months-grid {
+        .years-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 15px;
             margin-bottom: 20px;
         }
 
-        .month-btn {
+        .year-btn {
             background: #e6d3b7;
             border: 2px solid #8b4513;
             padding: 15px;
@@ -107,12 +107,12 @@
             color: #2c1810;
         }
 
-        .month-btn:hover {
+        .year-btn:hover {
             background: #d4af37;
             transform: scale(1.05);
         }
 
-        .month-view {
+        .year-view {
             display: none;
             background: #fff;
             border-radius: 10px;
@@ -121,98 +121,56 @@
             border: 2px solid #8b4513;
         }
 
-        .month-header {
-            font-size: 1.5em;
-            margin-bottom: 15px;
+        .year-header {
+            font-size: 1.8em;
+            margin-bottom: 20px;
             color: #8b4513;
             font-weight: bold;
         }
 
-        .days-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 5px;
+        .inventions-list {
+            text-align: left;
+            line-height: 1.8;
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #ddd;
         }
 
-        .day-header {
-            background: #8b4513;
-            color: #f4e4c1;
-            padding: 10px 5px;
-            text-align: center;
+        .invention-item {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-left: 4px solid #8b4513;
+            background: #fff;
+            border-radius: 5px;
+        }
+
+        .major-invention {
+            background: linear-gradient(45deg, #ffeb3b, #ffc107);
+            border-left: 4px solid #ff5722;
+            font-weight: bold;
+            animation: highlight 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes highlight {
+            from { box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+            to { box-shadow: 0 5px 15px rgba(255,87,34,0.3); }
+        }
+
+        .invention-date {
+            color: #8b4513;
             font-weight: bold;
             font-size: 0.9em;
         }
 
-        .day {
-            padding: 15px 5px;
-            text-align: center;
-            border: 1px solid #ddd;
-            cursor: pointer;
-            transition: all 0.3s;
-            min-height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .invention-title {
+            font-size: 1.1em;
+            margin: 5px 0;
         }
 
-        .day:hover {
-            background: #f0f0f0;
-        }
-
-        .special-day {
-            background: #ff4444;
-            color: white;
-            font-weight: bold;
-            animation: pulse 1.5s infinite;
-        }
-
-        .special-day:hover {
-            background: #cc0000;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-
-        .message-popup {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: linear-gradient(135deg, #2c1810, #4a2c17);
-            color: #f4e4c1;
-            padding: 30px;
-            border-radius: 15px;
-            border: 3px solid #d4af37;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
-            max-width: 500px;
-            width: 90%;
-            z-index: 1000;
-        }
-
-        .message-title {
-            font-size: 1.5em;
-            color: #d4af37;
-            margin-bottom: 15px;
-            font-weight: bold;
-        }
-
-        .message-text {
-            line-height: 1.6;
-            margin-bottom: 20px;
-        }
-
-        .close-btn {
-            background: #d4af37;
-            color: #2c1810;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-weight: bold;
+        .invention-description {
+            color: #555;
+            font-size: 0.9em;
         }
 
         .back-btn {
@@ -222,152 +180,170 @@
             padding: 10px 20px;
             border-radius: 20px;
             cursor: pointer;
-            margin-top: 15px;
+            margin-top: 20px;
             font-weight: bold;
         }
 
-        .overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.8);
-            z-index: 999;
+        .special-note {
+            background: #e8f5e8;
+            border: 2px solid #4caf50;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            color: #2e7d32;
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="intro-screen" id="introScreen">
-            <div class="intro-title">🗓️ Βρήκες το ημερολόγιο του 1974! 🗓️</div>
-            <button class="open-btn" onclick="openCalendar()">Άνοιξε το</button>
+            <div class="intro-title">🕰️ Ημερολόγιο Δεκαετίας του '70 🕰️</div>
+            <p style="margin-bottom: 20px;">Ανακαλύψτε τις σημαντικότερες εφευρέσεις της εποχής!</p>
+            <button class="open-btn" onclick="openCalendar()">Εξερευνήστε τη Δεκαετία</button>
         </div>
 
         <div class="calendar-container" id="calendarContainer">
             <div class="calendar-header">
-                <div class="year-title">ΗΜΕΡΟΛΟΓΙΟ 1974</div>
-                <div>Επιλέξτε έναν μήνα για να τον εξερευνήσετε</div>
+                <div class="decade-title">ΔΕΚΑΕΤΙΑ ΤΟΥ '70</div>
+                <div>Επιλέξτε ένα έτος για να δείτε τις σημαντικότερες εφευρέσεις</div>
             </div>
 
-            <div class="months-grid">
-                <div class="month-btn" onclick="showMonth(0)">ΙΑΝΟΥΑΡΙΟΣ</div>
-                <div class="month-btn" onclick="showMonth(1)">ΦΕΒΡΟΥΑΡΙΟΣ</div>
-                <div class="month-btn" onclick="showMonth(2)">ΜΑΡΤΙΟΣ</div>
-                <div class="month-btn" onclick="showMonth(3)">ΑΠΡΙΛΙΟΣ</div>
-                <div class="month-btn" onclick="showMonth(4)">ΜΑΙΟΣ</div>
-                <div class="month-btn" onclick="showMonth(5)">ΙΟΥΝΙΟΣ</div>
-                <div class="month-btn" onclick="showMonth(6)">ΙΟΥΛΙΟΣ</div>
-                <div class="month-btn" onclick="showMonth(7)">ΑΥΓΟΥΣΤΟΣ</div>
-                <div class="month-btn" onclick="showMonth(8)">ΣΕΠΤΕΜΒΡΙΟΣ</div>
-                <div class="month-btn" onclick="showMonth(9)">ΟΚΤΩΒΡΙΟΣ</div>
-                <div class="month-btn" onclick="showMonth(10)">ΝΟΕΜΒΡΙΟΣ</div>
-                <div class="month-btn" onclick="showMonth(11)">ΔΕΚΕΜΒΡΙΟΣ</div>
+            <div class="years-grid">
+                <div class="year-btn" onclick="showYear(1970)">1970</div>
+                <div class="year-btn" onclick="showYear(1971)">1971</div>
+                <div class="year-btn" onclick="showYear(1972)">1972</div>
+                <div class="year-btn" onclick="showYear(1973)">1973</div>
+                <div class="year-btn" onclick="showYear(1974)">1974</div>
+                <div class="year-btn" onclick="showYear(1975)">1975</div>
+                <div class="year-btn" onclick="showYear(1976)">1976</div>
+                <div class="year-btn" onclick="showYear(1977)">1977</div>
+                <div class="year-btn" onclick="showYear(1978)">1978</div>
+                <div class="year-btn" onclick="showYear(1979)">1979</div>
+                <div class="year-btn" onclick="showYear(1980)">1980</div>
+                <div class="year-btn" onclick="showYear(1981)">1981</div>
             </div>
 
-            <div class="month-view" id="monthView">
-                <div class="month-header" id="monthHeader"></div>
-                <div class="days-grid" id="daysGrid"></div>
-                <button class="back-btn" onclick="hideMonth()">Επιστροφή στους μήνες</button>
+            <div class="year-view" id="yearView">
+                <div class="year-header" id="yearHeader"></div>
+                <div class="inventions-list" id="inventionsList"></div>
+                <button class="back-btn" onclick="hideYear()">Επιστροφή στα έτη</button>
             </div>
         </div>
-    </div>
-
-    <div class="overlay" id="overlay"></div>
-    <div class="message-popup" id="messagePopup">
-        <div class="message-title">🖥️ Ιστορική Ημερομηνία! 🖥️</div>
-        <div class="message-text">
-            Ο Altair σήμερα γεννήθηκε.<br><br>
-            <strong>Βρες τη σειρά που άλλαξε τα πάντα:</strong><br>
-            Apple I, IBM PC, Altair 8800 , Commodore PET
-        </div>
-        <button class="close-btn" onclick="closeMessage()">Κλείσιμο</button>
     </div>
 
     <script>
-        const monthNames = [
-            'ΙΑΝΟΥΑΡΙΟΣ', 'ΦΕΒΡΟΥΑΡΙΟΣ', 'ΜΑΡΤΙΟΣ', 'ΑΠΡΙΛΙΟΣ', 'ΜΑΙΟΣ', 'ΙΟΥΝΙΟΣ',
-            'ΙΟΥΛΙΟΣ', 'ΑΥΓΟΥΣΤΟΣ', 'ΣΕΠΤΕΜΒΡΙΟΣ', 'ΟΚΤΩΒΡΙΟΣ', 'ΝΟΕΜΒΡΙΟΣ', 'ΔΕΚΕΜΒΡΙΟΣ'
-        ];
-
-        const dayNames = ['ΚΥΡ', 'ΔΕΥ', 'ΤΡΙ', 'ΤΕΤ', 'ΠΕΜ', 'ΠΑΡ', 'ΣΑΒ'];
-
-        const daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+        const inventionsByYear = {
+            1970: [
+                { date: "Απρίλιος 1970", title: "Πρώτη Ημέρα της Γης", description: "Ξεκίνημα του περιβαλλοντικού κινήματος παγκοσμίως" },
+                { date: "Ιούνιος 1970", title: "Intel 1103 RAM", description: "Πρώτη εμπορικά επιτυχημένη μνήμη DRAM" },
+                { date: "Οκτώβριος 1970", title: "Floppy Disk", description: "Η IBM παρουσιάζει τη δισκέτα 8 ιντσών" }
+            ],
+            1971: [
+                { date: "Μάρτιος 1971", title: "Intel 4004", description: "Ο πρώτος εμπορικός μικροεπεξεργαστής" },
+                { date: "Ιούλιος 1971", title: "E-mail", description: "O Ray Tomlinson στέλνει το πρώτο email" },
+                { date: "Σεπτέμβριος 1971", title: "Pocket Calculator", description: "Η Busicom παρουσιάζει τον πρώτο φορητό αριθμομηχανή" }
+            ],
+            1972: [
+                { date: "Ιανουάριος 1972", title: "Pong", description: "Το πρώτο εμπορικά επιτυχημένο βιντεοπαιχνίδι" },
+                { date: "Μάιος 1972", title: "C Programming Language", description: "Ο Dennis Ritchie δημιουργεί τη γλώσσα προγραμματισμού C" },
+                { date: "Σεπτέμβριος 1972", title: "CT Scanner", description: "Πρώτη χρήση του αξονικού τομογράφου σε ασθενή" }
+            ],
+            1973: [
+                { date: "Απρίλιος 1973", title: "Ethernet", description: "Ο Bob Metcalfe εφευρίσκει το Ethernet" },
+                { date: "Μάιος 1973", title: "Mobile Phone Call", description: "Πρώτη κλήση από κινητό τηλέφωνο (Motorola DynaTAC)" },
+                { date: "Δεκέμβριος 1973", title: "TCP/IP Protocol", description: "Αρχή ανάπτυξης του πρωτοκόλλου που θα γίνει η βάση του Internet" }
+            ],
+            1974: [
+                { date: "Φεβρουάριος 1974", title: "Rubik's Cube", description: "Ο Erno Rubik δημιουργεί τον περίφημο κύβο" },
+                { date: "Ιούνιος 1974", title: "UPC Barcode", description: "Πρώτη χρήση γραμμωτού κώδικα σε προϊόν" },
+                { date: "19 Δεκεμβρίου 1974", title: "🖥️ Altair 8800", description: "Ο πρώτος προσωπικός υπολογιστής - Η αρχή της επανάστασης των PC!", isMajor: true }
+            ],
+            1975: [
+                { date: "Ιανουάριος 1975", title: "Microsoft", description: "Ίδρυση της Microsoft από τους Bill Gates και Paul Allen" },
+                { date: "Ιούνιος 1975", title: "Kodak Digital Camera", description: "Πρώτη ψηφιακή φωτογραφική μηχανή (0.01 megapixels!)" },
+                { date: "Δεκέμβριος 1975", title: "Altair BASIC", description: "Πρώτη έκδοση της Microsoft BASIC για Altair" }
+            ],
+            1976: [
+                { date: "Απρίλιος 1976", title: "Apple Computer Company", description: "Ίδρυση της Apple από τους Jobs και Wozniak" },
+                { date: "11 Απριλίου 1976", title: "🍎 Apple I", description: "Ο Apple I παρουσιάζεται στο Homebrew Computer Club - Η γέννηση της Apple!", isMajor: true },
+                { date: "Ιούνιος 1976", title: "VHS", description: "Η JVC παρουσιάζει το σύστημα εγγραφής VHS" }
+            ],
+            1977: [
+                { date: "15 Ιανουαρίου 1977", title: "💻 Commodore PET", description: "Παρουσίαση του Commodore PET - Ένας από τους πρώτους ολοκληρωμένους PC!", isMajor: true },
+                { date: "Ιούνιος 1977", title: "Apple II", description: "Ο Apple II ορίζει το μέλλον των προσωπικών υπολογιστών" },
+                { date: "Αύγουστος 1977", title: "Voyager 1 & 2", description: "Εκτόξευση των διαστημικών σκαφών Voyager" }
+            ],
+            1978: [
+                { date: "Μάιος 1978", title: "GPS", description: "Εκτόξευση του πρώτου δορυφόρου GPS" },
+                { date: "Ιούνιος 1978", title: "Intel 8086", description: "Ο επεξεργαστής που θα γίνει η βάση των PC" },
+                { date: "Δεκέμβριος 1978", title: "Laser Disc", description: "Πρώτη κυκλοφορία του LaserDisc" }
+            ],
+            1979: [
+                { date: "Μάρτιος 1979", title: "WordStar", description: "Πρώτο επαγγελματικό πρόγραμμα επεξεργασίας κειμένου" },
+                { date: "Ιούλιος 1979", title: "Walkman", description: "Η Sony κυκλοφορεί το πρώτο Walkman" },
+                { date: "Νοέμβριος 1979", title: "VisiCalc", description: "Πρώτο λογιστικό φύλλο για προσωπικούς υπολογιστές" }
+            ],
+            1980: [
+                { date: "Μάιος 1980", title: "Pac-Man", description: "Κυκλοφορία του θρυλικού παιχνιδιού Pac-Man" },
+                { date: "Σεπτέμβριος 1980", title: "Seagate HDD", description: "Πρώτος σκληρός δίσκος για προσωπικούς υπολογιστές (5MB)" },
+                { date: "Δεκέμβριος 1980", title: "Post-it Notes", description: "Η 3M αρχίζει την εμπορική διάθεση των Post-it" }
+            ],
+            1981: [
+                { date: "12 Απριλίου 1981", title: "🏢 IBM PC", description: "Η IBM παρουσιάζει τον IBM Personal Computer - Η επανάσταση στον κόσμο των PC!", isMajor: true },
+                { date: "Αύγουστος 1981", title: "MTV", description: "Εκκίνηση του καναλιού MTV" },
+                { date: "Οκτώβριος 1981", title: "MS-DOS", description: "Η Microsoft κυκλοφορεί το MS-DOS 1.0" }
+            ]
+        };
 
         function openCalendar() {
             document.getElementById('introScreen').style.display = 'none';
             document.getElementById('calendarContainer').style.display = 'block';
         }
 
-        function showMonth(monthIndex) {
-            const monthView = document.getElementById('monthView');
-            const monthHeader = document.getElementById('monthHeader');
-            const daysGrid = document.getElementById('daysGrid');
+        function showYear(year) {
+            const yearView = document.getElementById('yearView');
+            const yearHeader = document.getElementById('yearHeader');
+            const inventionsList = document.getElementById('inventionsList');
 
-            monthHeader.textContent = monthNames[monthIndex] + ' 1974';
+            yearHeader.textContent = `ΕΦΕΥΡΕΣΕΙΣ ΤΟΥ ${year}`;
             
-            // Clear previous content
-            daysGrid.innerHTML = '';
+            inventionsList.innerHTML = '';
 
-            // Add day headers
-            dayNames.forEach(day => {
-                const dayHeader = document.createElement('div');
-                dayHeader.className = 'day-header';
-                dayHeader.textContent = day;
-                daysGrid.appendChild(dayHeader);
-            });
+            const inventions = inventionsByYear[year] || [];
+            
+            if (inventions.length === 0) {
+                inventionsList.innerHTML = '<p>Δεν υπάρχουν καταγεγραμμένες εφευρέσεις για αυτό το έτος.</p>';
+            } else {
+                inventions.forEach(invention => {
+                    const inventionDiv = document.createElement('div');
+                    inventionDiv.className = invention.isMajor ? 'invention-item major-invention' : 'invention-item';
+                    
+                    inventionDiv.innerHTML = `
+                        <div class="invention-date">${invention.date}</div>
+                        <div class="invention-title">${invention.title}</div>
+                        <div class="invention-description">${invention.description}</div>
+                    `;
+                    
+                    inventionsList.appendChild(inventionDiv);
+                });
 
-            // Calculate first day of month (1974-01-01 was Tuesday = 2)
-            const firstDayOfYear = 2; // Tuesday
-            let dayOfYear = 0;
-            for (let i = 0; i < monthIndex; i++) {
-                dayOfYear += daysInMonth[i];
-            }
-            const firstDayOfMonth = (firstDayOfYear + dayOfYear) % 7;
-
-            // Add empty cells for days before month starts
-            for (let i = 0; i < firstDayOfMonth; i++) {
-                const emptyDay = document.createElement('div');
-                emptyDay.className = 'day';
-                daysGrid.appendChild(emptyDay);
-            }
-
-            // Add days of the month
-            const daysCount = daysInMonth[monthIndex];
-            for (let day = 1; day <= daysCount; day++) {
-                const dayElement = document.createElement('div');
-                dayElement.className = 'day';
-                dayElement.textContent = day;
-                
-                // Check if this is December 19, 1974
-                if (monthIndex === 11 && day === 19) {
-                    dayElement.className += ' special-day';
-                    dayElement.onclick = () => showMessage();
+                // Add special note for years with major inventions
+                const hasMajorInventions = inventions.some(inv => inv.isMajor);
+                if (hasMajorInventions) {
+                    const noteDiv = document.createElement('div');
+                    noteDiv.className = 'special-note';
+                    noteDiv.innerHTML = '⭐ Αυτό το έτος περιλαμβάνει σημαντικές εφευρέσεις που άλλαξαν την τεχνολογία!';
+                    inventionsList.appendChild(noteDiv);
                 }
-                
-                daysGrid.appendChild(dayElement);
             }
 
-            monthView.style.display = 'block';
+            yearView.style.display = 'block';
         }
 
-        function hideMonth() {
-            document.getElementById('monthView').style.display = 'none';
+        function hideYear() {
+            document.getElementById('yearView').style.display = 'none';
         }
-
-        function showMessage() {
-            document.getElementById('overlay').style.display = 'block';
-            document.getElementById('messagePopup').style.display = 'block';
-        }
-
-        function closeMessage() {
-            document.getElementById('overlay').style.display = 'none';
-            document.getElementById('messagePopup').style.display = 'none';
-        }
-
-        // Close message when clicking overlay
-        document.getElementById('overlay').onclick = closeMessage;
     </script>
 </body>
 </html>
